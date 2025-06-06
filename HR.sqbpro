@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="D:/DA/SQL/Dataset/employees.sqlite" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1559"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Human Resources" custom_title="0" dock_id="5" table="4,15:mainHuman Resources"/><dock_state state="000000ff00000000fd00000001000000020000043c000002b6fc0100000005fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000000002490000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000000002490000000000000000fb000000160064006f0063006b00420072006f00770073006500340100000000000002490000000000000000fb000000160064006f0063006b00420072006f007700730065003501000000000000043c0000013300ffffff0000025f0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Human Resources" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="85"/><column index="2" value="300"/><column index="3" value="300"/><column index="4" value="117"/><column index="5" value="148"/><column index="6" value="300"/><column index="7" value="210"/><column index="8" value="288"/><column index="9" value="101"/><column index="10" value="85"/><column index="11" value="187"/><column index="12" value="132"/><column index="13" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="employees" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="85"/><column index="3" value="70"/><column index="4" value="39"/><column index="5" value="85"/><column index="6" value="46"/><column index="7" value="42"/><column index="8" value="33"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">CREATE TABLE human_resources_clean (
+    id INTEGER,
+    first_name TEXT,
+    last_name TEXT,
+    birthdate DATE,
+    gender TEXT,
+    race TEXT,
+    department TEXT,
+    jobtitle TEXT,
+    location TEXT,
+    hire_date DATE,
+    termdate DATE,
+    location_city TEXT,
+    location_state TEXT
+);
+ insert into human_resources_clean select * from &quot;Human Resources&quot;;
+ 
+ select * from human_resources_clean;
+ 
+ --Q1. Count of Employees by Department
+ 
+ Select department,Count(id) as Emp_count from human_resources_clean
+ group by department
+ Order by Emp_count Desc;
+ 
+ ---Gender Distribution by Job Title
+ 
+ Select jobtitle,count(gender) as count from human_resources_clean
+ group by jobtitle,gender
+ order by count DESC;
+ 
+ --List the full names of all employees who work in the Engineering department.
+ select first_name || ' '|| last_name as Full_Name from human_resources_clean
+ where department = 'Engineering';
+ 
+ ---Retrieve all employees who were hired before the year 2000.
+ select * from human_resources_clean
+ where hire_date &lt; '2000-01-01';
+ 
+ --Display the first 10 youngest employees based on their birthdate.
+ SELECT * from human_resources_clean
+ order by birthdate DESC
+ limit 10;
+ 
+ --Find all female employees in the “Product Management” department.
+ select * from human_resources_clean
+ where gender ='Female' and department= 'Product Management';
+ 
+--List departments with more than 50 employees.
+select department,count(*) from human_resources_clean
+group by department
+having count(*)&gt;50;
+
+--List employees who were hired after the most recently hired employee in the Engineering department.
+SELECT *
+FROM human_resources_clean
+WHERE hire_date &gt;
+      (SELECT MAX(hire_date)
+       FROM &quot;Human Resources&quot;
+       WHERE department = 'Engineering');
+	   
+--- Find the department with the least number of employees using a subquery.
+SELECT department, COUNT(*) AS employee_count
+FROM &quot;Human Resources&quot;
+GROUP BY department
+HAVING employee_count =
+    (SELECT MIN(dept_count)
+     FROM (
+         SELECT department, COUNT(*) AS dept_count
+         FROM &quot;Human Resources&quot;
+         GROUP BY department
+     ));
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
