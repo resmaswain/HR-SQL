@@ -70,4 +70,40 @@ HAVING employee_count =
          FROM &quot;Human Resources&quot;
          GROUP BY department
      ));
+
+	--reate a view v_active_employees that includes only those who do not have a termdate.
+CREATE VIEW v_active_employees AS
+SELECT *
+FROM human_resources_clean
+WHERE termdate IS NULL OR termdate = '';
+
+--Create an index on the hire_date column to optimize filtering by hire year.
+CREATE INDEX idx_hire_date ON &quot;Human Resources&quot;(hire_date);
+
+Select * from human_resources_clean;
+	
+--- Which department has the highest female representation?
+select department,count(*) as total_count from human_resources_clean
+where gender = 'Female'
+GROUP by department	 
+order by total_count desc
+limit 1;
+
+--Which job title is most common among terminated employees?
+SELECT jobtitle,count(*) as terminated_count
+from human_resources_clean
+where termdate is not NULL
+group by jobtitle
+order by terminated_count desc
+Limit 1;
+
+--Which state has the highest number of hires in the last 5 years?
+SELECT location_state, COUNT(*) AS recent_hires
+FROM &quot;Human Resources&quot;
+WHERE hire_date &gt;= date('now', '-5 years')
+GROUP BY location_state
+ORDER BY recent_hires DESC
+LIMIT 1;
+
+
 </sql><current_tab id="0"/></tab_sql></sqlb_project>
